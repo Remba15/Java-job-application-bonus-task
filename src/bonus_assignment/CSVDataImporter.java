@@ -15,10 +15,11 @@ public class CSVDataImporter {
 	private static String connectionString = "jdbc:postgresql://localhost:5432/Evolva_test_Renato_Kuna";
 	
 	public static void main(String[] args) {
-		dataImport(csvRootFolder);
+		CSVDataImporter dataImporter = new CSVDataImporter();
+		dataImporter.dataImport(csvRootFolder);
 	}
 	
-	private static void dataImport(String filePath) {
+	private void dataImport(String filePath) {
 		List<String> csvFiles = new ArrayList<String>();
 		
 		csvFiles = returnCSVFileList(csvRootFolder);
@@ -28,7 +29,7 @@ public class CSVDataImporter {
 		}
 	}
 	
-	private static List<String> returnCSVFileList(String rootFolder) {
+	private List<String> returnCSVFileList(String rootFolder) {
 		
 		List<String> csvFiles = new ArrayList<String>();
 		File folder = new File(rootFolder);
@@ -45,7 +46,7 @@ public class CSVDataImporter {
 		return csvFiles;
 	}
 	
-	private static void saveIntoDatabase(String filePath) {
+	private void saveIntoDatabase(String filePath) {
 		File csvFile = new File(filePath);
 		Connection connect = null;
 		
@@ -134,7 +135,7 @@ public class CSVDataImporter {
 		}
 	}
 	
-	private static List<List<String>> getCSVData(String fileName){
+	private List<List<String>> getCSVData(String fileName){
 		List<List<String>> csvItems = new ArrayList<>();
 		
 		try(Scanner scan = new Scanner(new File(csvRootFolder + "\\" + fileName))){
@@ -150,7 +151,7 @@ public class CSVDataImporter {
 		return csvItems;
 	}
 	
-	private static List<String> getRowItem(String line) {
+	private List<String> getRowItem(String line) {
 		List<String> items = new ArrayList<String>();
 		try (Scanner rowScan = new Scanner(line)){
 			rowScan.useDelimiter(",");

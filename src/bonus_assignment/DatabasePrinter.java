@@ -19,10 +19,11 @@ public class DatabasePrinter {
 	private static List<Integer> totalAmountList = new ArrayList<Integer>();
 	
 	public static void main(String[] args) {
-		printData();
+		DatabasePrinter databasePrinter = new DatabasePrinter();
+		databasePrinter.printData();
 	}
 	
-	private static void printData() {
+	private void printData() {
 		Connection connect = null;
 		StringBuilder HTMLFile = new StringBuilder();
 		//System.out.println("Retrieving data from database...");
