@@ -1,5 +1,9 @@
 package bonus_assignment;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabasePrinter {
+	private static String csvRootFolder = "F:\\data";
 	private static String connectionString = "jdbc:postgresql://localhost:5432/Evolva_test_Renato_Kuna";
 	private static List<String> totalCurrencyList = new ArrayList<String>();
 	private static List<Integer> totalAmountList = new ArrayList<Integer>();
@@ -19,7 +24,14 @@ public class DatabasePrinter {
 	
 	private static void printData() {
 		Connection connect = null;
-		System.out.println("Retrieving data from database...");
+		StringBuilder HTMLFile = new StringBuilder();
+		//System.out.println("Retrieving data from database...");
+		HTMLFile.append("<html>");
+		HTMLFile.append("<head>");
+		HTMLFile.append("<title>Money Counter Report</title>");
+		HTMLFile.append("</head>");
+		HTMLFile.append("<body>");
+		HTMLFile.append("<p>Retrieving data from database...</p>");
 		try
 		{
 			connect = DriverManager.getConnection(connectionString, "postgres", "StLj.575");
@@ -74,13 +86,16 @@ public class DatabasePrinter {
 				statement = connect.prepareStatement(sqlQuery);
 				rs = statement.executeQuery();
 				while(rs.next()) {
-					System.out.println("\ndata for " + rs.getString("name") + " found:");
+					//System.out.println("\ndata for " + rs.getString("name") + " found:");
+					HTMLFile.append("<p><br>data for " + rs.getString("name") + " found:<br>");
 				}
 				
-				System.out.println("  Totals by currencies:");
+				//System.out.println("  Totals by currencies:");
+				HTMLFile.append("  Totals by currencies:<br>");
 				
 				for(int j = 0; j < currencyList.size(); j++) {
-					System.out.printf("    %s: %d\n", currencyList.get(j), amountList.get(j));
+					//System.out.printf("    %s: %d\n", currencyList.get(j), amountList.get(j));
+					HTMLFile.append("    " + currencyList.get(j)+ ": " + amountList.get(j).toString()+ "<br>");
 					
 					if(!totalCurrencyList.contains(currencyList.get(j))) {
 						totalCurrencyList.add(currencyList.get(j));
@@ -95,18 +110,36 @@ public class DatabasePrinter {
 				}
 				currencyList.clear();
 				amountList.clear();
+				HTMLFile.append("</p>");
 			}
 			
 			//Printing total amounts for each currency
-			System.out.println("\nMoney in all countries:");
+			//System.out.println("\nMoney in all countries:");
+			HTMLFile.append("<p><br>Money in all countries:<br>");
 			for(int i = 0; i < totalCurrencyList.size(); i++) {
-				System.out.printf("  %s: %d\n", totalCurrencyList.get(i), totalAmountList.get(i));
+				//System.out.printf("  %s: %d\n", totalCurrencyList.get(i), totalAmountList.get(i));
+				HTMLFile.append("  " + totalCurrencyList.get(i) + ": " + totalAmountList.get(i).toString() + "<br>");
 			}
+			HTMLFile.append("</p>");
+			HTMLFile.append("</body>");
+			HTMLFile.append("</html>");
 			
 		}
 		catch (SQLException e)
 		{
 			System.out.println("Error while retrieving data from database.");
+			System.out.println(e.getMessage());
+		}
+		
+		try
+		{
+			FileWriter fstream = new FileWriter(new File(csvRootFolder, "MoneyCounterReport.html"));
+			BufferedWriter out = new BufferedWriter(fstream);
+			out.write(HTMLFile.toString());
+			out.close();
+		}
+		catch (IOException e) {
+			System.out.println("Error while exporting HTML file.");
 			System.out.println(e.getMessage());
 		}
 	}
