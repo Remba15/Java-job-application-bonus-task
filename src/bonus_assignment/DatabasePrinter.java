@@ -31,7 +31,6 @@ public class DatabasePrinter {
 		
 		try
 		{
-			List<String> countryList = new ArrayList<String>();
 			List<String> currencyList = new ArrayList<String>();
 			List<Integer> amountList = new ArrayList<Integer>();
 			List<Integer> countryIDList = new ArrayList<Integer>();
