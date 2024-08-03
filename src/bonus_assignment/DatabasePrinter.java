@@ -91,11 +91,11 @@ public class DatabasePrinter {
 				}
 				
 				//System.out.println("  Totals by currencies:");
-				HTMLFile.append("  Totals by currencies:<br>");
+				HTMLFile.append("&ensp;Totals by currencies:<br>");
 				
 				for(int j = 0; j < currencyList.size(); j++) {
 					//System.out.printf("    %s: %d\n", currencyList.get(j), amountList.get(j));
-					HTMLFile.append("    " + currencyList.get(j)+ ": " + amountList.get(j).toString()+ "<br>");
+					HTMLFile.append("&emsp;" + currencyList.get(j)+ ": " + amountList.get(j).toString()+ "<br>");
 					
 					if(!totalCurrencyList.contains(currencyList.get(j))) {
 						totalCurrencyList.add(currencyList.get(j));
@@ -118,7 +118,7 @@ public class DatabasePrinter {
 			HTMLFile.append("<p><br>Money in all countries:<br>");
 			for(int i = 0; i < totalCurrencyList.size(); i++) {
 				//System.out.printf("  %s: %d\n", totalCurrencyList.get(i), totalAmountList.get(i));
-				HTMLFile.append("  " + totalCurrencyList.get(i) + ": " + totalAmountList.get(i).toString() + "<br>");
+				HTMLFile.append("&ensp;" + totalCurrencyList.get(i) + ": " + totalAmountList.get(i).toString() + "<br>");
 			}
 			HTMLFile.append("</p>");
 			HTMLFile.append("</body>");
