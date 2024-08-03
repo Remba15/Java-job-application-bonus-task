@@ -1,0 +1,114 @@
+package bonus_assignment;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DatabasePrinter {
+	private static String connectionString = "jdbc:postgresql://localhost:5432/Evolva_test_Renato_Kuna";
+	private static List<String> totalCurrencyList = new ArrayList<String>();
+	private static List<Integer> totalAmountList = new ArrayList<Integer>();
+	
+	public static void main(String[] args) {
+		printData();
+	}
+	
+	private static void printData() {
+		Connection connect = null;
+		System.out.println("Retrieving data from database...");
+		try
+		{
+			connect = DriverManager.getConnection(connectionString, "postgres", "StLj.575");
+		}
+		catch (SQLException e) {
+			System.out.println("Error while connecting to database.");
+			System.out.println(e.getMessage());
+		}
+		
+		try
+		{
+			List<String> countryList = new ArrayList<String>();
+			List<String> currencyList = new ArrayList<String>();
+			List<Integer> amountList = new ArrayList<Integer>();
+			List<Integer> countryIDList = new ArrayList<Integer>();
+			String sqlQuery;
+			ResultSet rs = null;
+			PreparedStatement statement = null;
+			
+			//Retrieving country id
+			sqlQuery = "SELECT id FROM country";
+			statement = connect.prepareStatement(sqlQuery);
+			rs = statement.executeQuery();
+			while(rs.next()) {
+				countryIDList.add(rs.getInt("id"));
+			}
+			
+			//Printing currency and amount data for each country
+			for(int i = 0; i < countryIDList.size(); i++) {
+				sqlQuery = "SELECT c.currency, c.amount\r\n"
+						+ "FROM country a inner join city b\r\n"
+						+ "ON a.id = b.country_id\r\n"
+						+ "inner join saving c\r\n"
+						+ "ON b.id = c.city_id\r\n"
+						+ "WHERE a.id = " + countryIDList.get(i);
+				statement = connect.prepareStatement(sqlQuery);
+				rs = statement.executeQuery();
+				while(rs.next()) {
+					if(!currencyList.contains(rs.getString("currency"))) {
+						currencyList.add(rs.getString("currency"));
+						amountList.add(rs.getInt("amount"));
+					}
+					else
+					{
+						int index = currencyList.indexOf(rs.getString("currency"));
+						int sum = amountList.get(index);
+						sum += rs.getInt("amount");
+						amountList.set(index, sum);
+					}
+				}
+				
+				sqlQuery = "SELECT name FROM country WHERE id=" + countryIDList.get(i);
+				statement = connect.prepareStatement(sqlQuery);
+				rs = statement.executeQuery();
+				while(rs.next()) {
+					System.out.println("\ndata for " + rs.getString("name") + " found:");
+				}
+				
+				System.out.println("  Totals by currencies:");
+				
+				for(int j = 0; j < currencyList.size(); j++) {
+					System.out.printf("    %s: %d\n", currencyList.get(j), amountList.get(j));
+					
+					if(!totalCurrencyList.contains(currencyList.get(j))) {
+						totalCurrencyList.add(currencyList.get(j));
+						totalAmountList.add(amountList.get(j));
+					}
+					else {
+						int index = totalCurrencyList.indexOf(currencyList.get(j));
+						int sum = totalAmountList.get(index);
+						sum += amountList.get(j);
+						totalAmountList.set(index, sum);
+					}
+				}
+				currencyList.clear();
+				amountList.clear();
+			}
+			
+			//Printing total amounts for each currency
+			System.out.println("\nMoney in all countries:");
+			for(int i = 0; i < totalCurrencyList.size(); i++) {
+				System.out.printf("  %s: %d\n", totalCurrencyList.get(i), totalAmountList.get(i));
+			}
+			
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Error while retrieving data from database.");
+			System.out.println(e.getMessage());
+		}
+	}
+}
