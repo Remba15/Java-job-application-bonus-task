@@ -13,19 +13,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabasePrinter {
-	private static String csvRootFolder = "F:\\data";
-	private static String connectionString = "jdbc:postgresql://localhost:5432/Evolva_test_Renato_Kuna";
-	private static List<String> totalCurrencyList = new ArrayList<String>();
-	private static List<Integer> totalAmountList = new ArrayList<Integer>();
+	private String csvRootFolder;	//"F:\\data";
+	private String connectionString;	//"jdbc:postgresql://localhost:5432/Evolva_test_Renato_Kuna"
 	
-	public static void main(String[] args) {
-		DatabasePrinter databasePrinter = new DatabasePrinter();
-		databasePrinter.printData();
+	
+	public DatabasePrinter(String rootFolder, String connectionString) {
+		this.csvRootFolder = rootFolder;
+		this.connectionString = connectionString;
 	}
 	
-	private void printData() {
+	
+	public String getCsvFolder() {
+		return this.csvRootFolder;
+	}
+	
+	public String getConnectionString() {
+		return this.connectionString;
+	}
+	
+	public void setCsvFolder(String rootFolder) {
+		this.csvRootFolder = rootFolder;
+	}
+	
+	public void setConnectionString(String connectionString) {
+		this.connectionString = connectionString;
+	}
+	
+	
+	public void printData() {
 		Connection connect = null;
 		StringBuilder HTMLFile = new StringBuilder();
+		List<String> totalCurrencyList = new ArrayList<String>();
+		List<Integer> totalAmountList = new ArrayList<Integer>();
+		
 		//System.out.println("Retrieving data from database...");
 		HTMLFile.append("<html>");
 		HTMLFile.append("<head>");
@@ -35,7 +55,7 @@ public class DatabasePrinter {
 		HTMLFile.append("<p>Retrieving data from database...</p>");
 		try
 		{
-			connect = DriverManager.getConnection(connectionString, "postgres", "StLj.575");
+			connect = DriverManager.getConnection(this.connectionString, "postgres", "StLj.575");
 		}
 		catch (SQLException e) {
 			System.out.println("Error while connecting to database.");
@@ -134,7 +154,7 @@ public class DatabasePrinter {
 		
 		try
 		{
-			FileWriter fstream = new FileWriter(new File(csvRootFolder, "MoneyCounterReport.html"));
+			FileWriter fstream = new FileWriter(new File(this.csvRootFolder, "MoneyCounterReport.html"));
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(HTMLFile.toString());
 			out.close();
@@ -143,5 +163,6 @@ public class DatabasePrinter {
 			System.out.println("Error while exporting HTML file.");
 			System.out.println(e.getMessage());
 		}
+		
 	}
 }

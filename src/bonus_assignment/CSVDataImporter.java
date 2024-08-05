@@ -11,25 +11,45 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class CSVDataImporter {
-	private static String csvRootFolder = "F:\\data";
-	private static String connectionString = "jdbc:postgresql://localhost:5432/Evolva_test_Renato_Kuna";
 	
-	public static void main(String[] args) {
-		CSVDataImporter dataImporter = new CSVDataImporter();
-		dataImporter.dataImport(csvRootFolder);
+	private String csvRootFolder; //"F:\\data"
+	private String connectionString; //"jdbc:postgresql://localhost:5432/Evolva_test_Renato_Kuna"
+	
+	
+	public CSVDataImporter(String rootFolder, String connectionString) {
+		this.csvRootFolder = rootFolder;
+		this.connectionString = connectionString;
 	}
 	
-	private void dataImport(String filePath) {
+	
+	public String getCsvFolder() {
+		return this.csvRootFolder;
+	}
+	
+	public String getConnectionString() {
+		return this.connectionString;
+	}
+	
+	public void setCsvFolder(String rootFolder) {
+		this.csvRootFolder = rootFolder;
+	}
+	
+	public void setConnectionString(String connectionString) {
+		this.connectionString = connectionString;
+	}
+	
+	
+	public void dataImport() {
 		List<String> csvFiles = new ArrayList<String>();
 		
-		csvFiles = returnCSVFileList(csvRootFolder);
+		csvFiles = getCSVFileList(this.csvRootFolder);
 		
 		for(int i = 0; i < csvFiles.size(); i++) {
-			saveIntoDatabase(csvRootFolder + "\\" + csvFiles.get(i));
+			saveIntoDatabase(this.csvRootFolder + "\\" + csvFiles.get(i));
 		}
 	}
 	
-	private List<String> returnCSVFileList(String rootFolder) {
+	private List<String> getCSVFileList(String rootFolder) {
 		
 		List<String> csvFiles = new ArrayList<String>();
 		File folder = new File(rootFolder);
@@ -52,7 +72,7 @@ public class CSVDataImporter {
 		
 		try
 		{
-			connect = DriverManager.getConnection(connectionString, "postgres", "StLj.575");
+			connect = DriverManager.getConnection(this.connectionString, "postgres", "StLj.575");
 		}
 		catch(SQLException e)
 		{
@@ -138,7 +158,7 @@ public class CSVDataImporter {
 	private List<List<String>> getCSVData(String fileName){
 		List<List<String>> csvItems = new ArrayList<>();
 		
-		try(Scanner scan = new Scanner(new File(csvRootFolder + "\\" + fileName))){
+		try(Scanner scan = new Scanner(new File(this.csvRootFolder + "\\" + fileName))){
 			while (scan.hasNextLine()) {
 				csvItems.add(getRowItem(scan.nextLine()));
 			}
@@ -162,6 +182,5 @@ public class CSVDataImporter {
 			
 		return items;
 	}
-	
-	
+
 }
