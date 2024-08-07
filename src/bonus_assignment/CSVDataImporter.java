@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class CSVDataImporter {
 	
-	private String csvRootFolder; //"F:\\data"
-	private String connectionString; //"jdbc:postgresql://localhost:5432/Evolva_test_Renato_Kuna"
+	private String csvRootFolder;
+	private String connectionString;
 	
 	
 	public CSVDataImporter(String rootFolder, String connectionString) {

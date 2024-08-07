@@ -13,8 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabasePrinter {
-	private String csvRootFolder;	//"F:\\data";
-	private String connectionString;	//"jdbc:postgresql://localhost:5432/Evolva_test_Renato_Kuna"
+	
+	private String csvRootFolder;
+	private String connectionString;
 	
 	
 	public DatabasePrinter(String rootFolder, String connectionString) {
@@ -158,6 +159,7 @@ public class DatabasePrinter {
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(HTMLFile.toString());
 			out.close();
+			System.out.println("File saved on location: " + this.csvRootFolder);
 		}
 		catch (IOException e) {
 			System.out.println("Error while exporting HTML file.");
