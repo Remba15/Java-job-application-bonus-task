@@ -56,7 +56,7 @@ public class DatabasePrinter {
 		HTMLFile.append("<p>Retrieving data from database...</p>");
 		try
 		{
-			connect = DriverManager.getConnection(this.connectionString, "postgres", "StLj.575");
+			connect = DriverManager.getConnection(getConnectionString(), "postgres", "StLj.575");
 		}
 		catch (SQLException e) {
 			System.out.println("Error while connecting to database.");
@@ -155,11 +155,11 @@ public class DatabasePrinter {
 		
 		try
 		{
-			FileWriter fstream = new FileWriter(new File(this.csvRootFolder, "MoneyCounterReport.html"));
+			FileWriter fstream = new FileWriter(new File(getCsvFolder(), "MoneyCounterReport.html"));
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(HTMLFile.toString());
 			out.close();
-			System.out.println("File saved on location: " + this.csvRootFolder);
+			System.out.println("File saved on location: " + getCsvFolder());
 		}
 		catch (IOException e) {
 			System.out.println("Error while exporting HTML file.");
